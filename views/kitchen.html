@@ -1,0 +1,42 @@
+    <h1>My Kitchen</h1>
+    <p class="eyebrow">What you have at home. Claude uses this to suggest what to cook.</p>
+
+    <form class="add-box" id="add-form" novalidate>
+      <label class="pf-label" for="add-input">Add an ingredient</label>
+      <div class="copy-row">
+        <input id="add-input" type="text" placeholder="Add an ingredient, like paneer" maxlength="300" autocomplete="off" enterkeyhint="done" aria-describedby="add-hint">
+        <button class="btn" type="submit">Add</button>
+      </div>
+      <p class="pf-hint" id="add-hint">Separate several with commas.</p>
+      <p class="pf-hint add-msg" id="add-msg" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="tip-card">
+      <p>Prefer not to type? Tell Claude what you have, like ‘I have paneer, spinach and rice,’ and it adds them here.</p>
+      <div class="copy-inline">
+        <button class="btn btn-ghost btn-compact" id="copy-tip" type="button" aria-describedby="copy-tip-what">Copy</button>
+        <span class="visually-hidden" id="copy-tip-what">Copies: I have paneer, spinach and rice</span>
+        <span class="pf-hint copied-note" id="copy-tip-status" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <section class="kitchen-section" aria-labelledby="list-heading">
+      <div class="panel-head">
+        <h2 id="list-heading">In your kitchen</h2>
+        <p class="save-status" id="count" aria-live="polite"></p>
+      </div>
+      <p class="day-note" id="empty" hidden>Nothing here yet. Add what’s at home, or tell Claude: I have paneer, spinach and rice.</p>
+      <ul class="tag-list kitchen-list" id="list" aria-labelledby="list-heading"></ul>
+    </section>
+
+    <section class="panel ask-card" id="ask" aria-label="Ask Claude" hidden>
+      <p class="ask-q">Ask Claude: what can I cook with what I have?</p>
+      <p class="pf-hint">Claude will suggest dishes and can save your pick to the planner.</p>
+      <div class="copy-inline">
+        <button class="btn btn-compact" id="copy-ask" type="button" aria-describedby="copy-ask-what">Copy</button>
+        <span class="visually-hidden" id="copy-ask-what">Copies: What can I cook with what I have?</span>
+        <span class="pf-hint copied-note" id="copy-ask-status" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <div class="toast-wrap" id="toast-wrap" role="status" aria-live="polite"></div>

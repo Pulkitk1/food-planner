@@ -1,0 +1,18 @@
+    <header class="greeting">
+      <h1 id="greeting">Hello</h1>
+      <p class="eyebrow" id="today-date"></p>
+    </header>
+
+    <section aria-labelledby="plan-heading">
+      <h2 id="plan-heading">Today’s plan</h2>
+      <ul class="meals" id="meals" aria-live="polite"></ul>
+      <div class="totals" id="totals" hidden></div>
+    </section>
+
+    <p class="status" id="status">
+      <span class="dot" id="status-dot" aria-hidden="true"></span>
+      <span id="status-text">Checking Claude…</span>
+    </p>
+
+    <button class="btn btn-block" id="tell-cook" type="button">Tell your cook</button>
+    <p class="copied" id="copied" role="status" aria-live="polite"></p>

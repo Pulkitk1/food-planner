@@ -1,0 +1,47 @@
+    <h1>Profile</h1>
+
+    <section class="panel" aria-labelledby="prefs-heading">
+      <div class="panel-head">
+        <h2 id="prefs-heading">Food preferences</h2>
+        <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
+      </div>
+      <div id="prefs"><p class="eyebrow">Loading…</p></div>
+    </section>
+
+    <section class="panel" aria-labelledby="key-heading">
+      <h2 id="key-heading">Your planner link</h2>
+      <p class="eyebrow">Your link is your key. Bookmark this page to get back to your planner on another device or browser.</p>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="copy-page-link" type="button">Copy link</button>
+      </div>
+      <p class="pf-hint" id="copy-page-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="claude-heading">
+      <h2 id="claude-heading">Claude connection</h2>
+      <p class="eyebrow">Connect your Claude to let it plan meals for you</p>
+      <div id="link-slot"></div>
+      <div id="steps-slot"></div>
+      <p class="status">
+        <span class="dot" id="status-dot" aria-hidden="true"></span>
+        <span id="status-text">Checking Claude…</span>
+      </p>
+      <div class="reset-area">
+        <button class="text-btn" id="reset-link" type="button" aria-describedby="reset-hint" aria-expanded="false" aria-controls="reset-confirm">Reset link</button>
+        <p class="pf-hint" id="reset-hint">This stops the old link working and gives you a new one.</p>
+        <div class="confirm" id="reset-confirm" hidden>
+          <p id="reset-question">Reset your link? Claude stops working with the old link straight away. You’ll need to add the new link in Claude.</p>
+          <div class="form-actions">
+            <button class="btn" id="reset-yes" type="button">Yes, reset link</button>
+            <button class="btn btn-ghost" id="reset-no" type="button">Cancel</button>
+          </div>
+        </div>
+        <p class="pf-hint" id="reset-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <a class="row-link" href="/w/{{key}}/profile/settings">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+      <span class="row-label">Settings</span>
+      <svg class="chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg>
+    </a>

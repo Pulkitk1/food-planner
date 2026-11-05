@@ -1,0 +1,62 @@
+    <a class="back-link" href="/w/{{key}}/profile">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 6-6 6 6 6"/></svg>
+      Back to Profile
+    </a>
+    <h1>Settings</h1>
+
+    <section class="panel settings-section" aria-labelledby="theme-heading">
+      <h2 id="theme-heading">Theme</h2>
+      <fieldset class="segmented">
+        <legend class="visually-hidden">Theme</legend>
+        <label><input type="radio" name="theme" value="light"><span>Light</span></label>
+        <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+        <label><input type="radio" name="theme" value="system"><span>System</span></label>
+      </fieldset>
+      <p class="eyebrow hint">System follows your device’s light or dark setting.</p>
+    </section>
+
+    <section class="panel settings-section" aria-labelledby="meals-heading">
+      <div class="panel-head">
+        <h2 id="meals-heading">Meals shown</h2>
+        <p class="save-status" id="meals-saved" role="status" aria-live="polite"></p>
+      </div>
+      <p class="pf-hint">Hidden meals keep their dishes. Turn a meal back on to see them again.</p>
+      <div class="switch-list" role="group" aria-labelledby="meals-heading">
+        <button class="switch-row" type="button" role="switch" aria-checked="true" data-meal="breakfast" disabled>
+          <span>Breakfast</span><span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        </button>
+        <button class="switch-row" type="button" role="switch" aria-checked="true" data-meal="lunch" disabled>
+          <span>Lunch</span><span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        </button>
+        <button class="switch-row" type="button" role="switch" aria-checked="true" data-meal="dinner" disabled>
+          <span>Dinner</span><span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+        </button>
+      </div>
+      <p class="pf-hint is-error meals-msg" id="meals-msg" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel settings-section" aria-labelledby="data-heading">
+      <h2 id="data-heading">Your data</h2>
+      <p class="pf-hint">Download your profile, meal plan and settings as a JSON file.</p>
+      <a class="btn" href="/api/{{key}}/export" download="food-planner-export.json">Export my data</a>
+    </section>
+
+    <section class="panel settings-section danger-zone" aria-labelledby="delete-heading">
+      <h2 id="delete-heading">Delete my account</h2>
+      <p class="danger-text">This permanently deletes your plans, kitchen list, preferences and Claude link. This cannot be undone.</p>
+      <button class="btn btn-danger" id="delete-open" type="button" aria-haspopup="dialog">Delete everything</button>
+    </section>
+
+    <dialog class="dialog" id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-desc">
+      <h2 id="delete-title">Delete everything?</h2>
+      <p id="delete-desc">Your plans, kitchen list, preferences and Claude link will be deleted for good. Claude will stop working with your link.</p>
+      <div class="field">
+        <label for="delete-confirm">Type DELETE to confirm</label>
+        <input id="delete-confirm" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </div>
+      <p class="pf-hint is-error" id="delete-error" role="alert"></p>
+      <div class="form-actions">
+        <button class="btn btn-danger" id="delete-final" type="button" disabled>Delete permanently</button>
+        <button class="btn btn-ghost" id="delete-cancel" type="button">Cancel</button>
+      </div>
+    </dialog>

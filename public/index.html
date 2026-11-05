@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <!--THEME-->
+  <title>Food Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="page">
+    <!--NOTICE-->
+    <p class="eyebrow">Food Planner</p>
+    <h1>Plan your week of meals, without the daily “what should I cook?”</h1>
+    <p class="eyebrow" style="margin:12px 0 28px">Your plan lives in a private workspace. Connect your own Claude to plan meals for you.</p>
+    <div id="continue-area" hidden style="margin-bottom:16px">
+      <a class="btn btn-block" id="continue-link" href="/">Continue to my planner</a>
+    </div>
+    <form method="post" action="/start" id="start-form">
+      <button class="btn btn-block" id="start-btn" type="submit">Get started</button>
+    </form>
+    <div class="confirm" id="start-confirm" hidden style="margin-top:16px">
+      <p id="start-question">This creates a new empty planner. Your current one stays saved at its own link.</p>
+      <div class="form-actions">
+        <button class="btn" id="start-yes" type="button">Yes, start a new workspace</button>
+        <button class="btn btn-ghost" id="start-no" type="button">Cancel</button>
+      </div>
+    </div>
+    <p class="eyebrow" id="start-hint" style="margin-top:16px;font-size:0.85rem">You’ll get a private link. Bookmark it — anyone with the link can see and edit your plan.</p>
+  </main>
+  <script src="/start.js"></script>
+</body>
+</html>

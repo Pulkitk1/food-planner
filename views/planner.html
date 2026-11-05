@@ -1,0 +1,25 @@
+    <h1>Planner</h1>
+
+    <div class="strip-wrap">
+      <button class="strip-arrow" id="strip-prev" type="button" aria-label="Earlier days">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m15 6-6 6 6 6"/></svg>
+      </button>
+      <div class="date-strip" id="strip" role="group" aria-label="Choose a day"></div>
+      <button class="strip-arrow" id="strip-next" type="button" aria-label="Later days">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <p class="day-note" id="empty-note" hidden>Nothing planned for this day. Add a dish, or ask Claude to plan your week.</p>
+
+    <ul class="meals" id="meals" aria-label="Meals for the selected day"></ul>
+
+    <section class="nutrition-card" id="nutrition" aria-labelledby="nutrition-title" hidden>
+      <h2 id="nutrition-title">Today’s nutrition</h2>
+      <ul class="stats" id="stats"></ul>
+      <p class="pill" id="pill" hidden></p>
+      <p class="nutri-missing" id="nutri-missing" hidden></p>
+      <p class="nutri-foot" id="nutri-foot"></p>
+    </section>
+
+    <div class="toast-wrap" id="toast-wrap" role="status" aria-live="polite"></div>
