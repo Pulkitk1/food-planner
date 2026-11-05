@@ -34,6 +34,11 @@ const THEME_SCRIPT = `(function(){var d=document.documentElement,K='fp-theme',me
   `apply();if(m){if(m.addEventListener)m.addEventListener('change',apply);else if(m.addListener)m.addListener(apply)}` +
   `window.fpTheme={get:get,set:function(v){if(!ok(v))return;mem=v;try{localStorage.setItem(K,v)}catch(e){}apply()}}})();`;
 
+// Logo / tab icon tags, shared by every page (layout pages and the start/not-found pages).
+const ICON_TAGS = `<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <meta name="theme-color" content="#E0A526">`;
+
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 function sidebar(key, active) {
@@ -44,7 +49,7 @@ function sidebar(key, active) {
       `<span>${esc(t.label)}</span></a></li>`;
   }).join('');
   return `<nav class="sidebar" aria-label="Main">` +
-    `<a class="logo" href="/w/${esc(key)}" aria-label="Food Planner home">FP</a>` +
+    `<a class="logo" href="/w/${esc(key)}" aria-label="Food Planner home"><img src="/favicon.svg" width="36" height="36" alt="Food Planner"></a>` +
     `<ul>${items}</ul></nav>`;
 }
 
@@ -77,6 +82,7 @@ ${content}
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="light dark">
+  ${ICON_TAGS}
   <script>${THEME_SCRIPT}</script>
   <script>try{localStorage.setItem('fp_workspace',${JSON.stringify(String(key))})}catch(e){}</script>
   <title>${esc(title)} · Food Planner</title>
@@ -95,4 +101,4 @@ ${scripts.map((s) => `  <script src="${esc(s)}"></script>`).join('\n')}
 const placeholder = (heading) => `    <h1>${esc(heading)}</h1>
     <p class="eyebrow">Coming soon</p>`;
 
-module.exports = { renderPage, placeholder, TABS, THEME_SCRIPT };
+module.exports = { renderPage, placeholder, TABS, THEME_SCRIPT, ICON_TAGS };

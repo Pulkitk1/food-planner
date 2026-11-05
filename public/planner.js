@@ -125,7 +125,10 @@
       const b = el('button', 'chip' + (isToday ? ' today' : ''));
       b.type = 'button';
       b.dataset.date = s;
+      // Every chip reserves the month row; only the 1st of a month fills it.
+      if (d.getDate() === 1) b.classList.add('month-start');
       b.append(
+        el('span', 'chip-mon', d.getDate() === 1 ? d.toLocaleDateString(undefined, { month: 'short' }) : ''),
         el('span', 'chip-dow', d.toLocaleDateString(undefined, { weekday: 'short' })),
         el('span', 'chip-num', String(d.getDate()))
       );
@@ -158,12 +161,44 @@
     const page = (dir) => strip.scrollBy({ left: dir * strip.clientWidth * 0.8, behavior: reduce ? 'auto' : 'smooth' });
     $('strip-prev').addEventListener('click', () => page(-1));
     $('strip-next').addEventListener('click', () => page(1));
+
+    // Month label follows the chip nearest the centre of the visible strip
+    // (scrolling, swiping and the arrow buttons all fire scroll events).
+    let ticking = false;
+    strip.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { ticking = false; updateMonthLabel(); });
+    }, { passive: true });
+    window.addEventListener('resize', updateMonthLabel);
+    updateMonthLabel();
+    updateSelectedLine();
+  }
+
+  function updateMonthLabel() {
+    const strip = $('strip');
+    const centre = strip.scrollLeft + strip.clientWidth / 2;
+    let best = null, bestDist = Infinity;
+    for (const c of chips()) {
+      const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - centre);
+      if (dist < bestDist) { bestDist = dist; best = c; }
+    }
+    if (!best) return;
+    const text = parseYmd(best.dataset.date).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    if ($('month-label').textContent !== text) $('month-label').textContent = text;
+  }
+
+  function updateSelectedLine() {
+    const line = $('selected-date');
+    line.textContent = parseYmd(state.selected).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+    if (state.selected === state.today) line.append(el('span', 'selected-today', ' · Today'));
   }
 
   function select(date) {
     state.selected = date;
     state.editing = null;
     updateChips();
+    updateSelectedLine();
     render();
   }
 

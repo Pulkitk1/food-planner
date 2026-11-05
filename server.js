@@ -5,7 +5,7 @@ const express = require('express');
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
-const { renderPage, THEME_SCRIPT } = require('./layout');
+const { renderPage, THEME_SCRIPT, ICON_TAGS } = require('./layout');
 const { store, MEALS, samplePlan } = require('./store');
 const { emptyProfile, applyProfileFields } = require('./profile-schema');
 const { mountMcp } = require('./mcp');
@@ -23,7 +23,7 @@ const NUTRIENTS = ['calories', 'protein', 'carbs', 'fat', 'fibre'];
 const MAX_RANGE_DAYS = 400;
 const page = (name) => path.join(__dirname, 'public', name);
 // Standalone pages (start, not found) get the same theme script as the shared layout.
-const themed = (name) => fs.readFileSync(page(name), 'utf8').replace('<!--THEME-->', `<script>${THEME_SCRIPT}</script>`);
+const themed = (name) => fs.readFileSync(page(name), 'utf8').replace('<!--THEME-->', `${ICON_TAGS}\n  <script>${THEME_SCRIPT}</script>`);
 const START_HTML = themed('index.html');
 const DELETED_NOTICE = '<p class="notice" role="status">Your data has been deleted.</p>';
 const NOT_FOUND_HTML = themed('notfound.html');

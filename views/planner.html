@@ -1,4 +1,5 @@
     <h1>Planner</h1>
+    <p class="month-label" id="month-label" aria-live="polite"></p>
 
     <div class="strip-wrap">
       <button class="strip-arrow" id="strip-prev" type="button" aria-label="Earlier days">
@@ -9,6 +10,8 @@
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg>
       </button>
     </div>
+
+    <p class="selected-date" id="selected-date" aria-live="polite"></p>
 
     <p class="day-note" id="empty-note" hidden>Nothing planned for this day. Add a dish, or ask Claude to plan your week.</p>
 
