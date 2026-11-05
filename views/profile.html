@@ -1,109 +1,152 @@
     <h1>Profile</h1>
 
-    <section class="panel" aria-labelledby="prefs-heading">
-      <div class="panel-head">
-        <h2 id="prefs-heading">Food preferences</h2>
-        <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
+    <!-- Each section: a heading holding a full-width toggle button, then its content region.
+         Content is hidden (and so not keyboard-reachable) while closed. profile.js wires these up. -->
+    <section class="panel sec" id="food-preferences">
+      <h2 class="sec-h">
+        <button class="sec-btn" id="sec-food-btn" type="button" aria-expanded="false" aria-controls="sec-food">
+          <span class="sec-text"><span class="sec-title">Food preferences</span><span class="sec-sum" id="sum-food">Loading…</span></span>
+          <svg class="sec-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </h2>
+      <div class="sec-body" id="sec-food" role="region" aria-labelledby="sec-food-btn" hidden>
+        <div class="sec-inner">
+          <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
+          <div id="prefs"><p class="eyebrow">Loading…</p></div>
+        </div>
       </div>
-      <div id="prefs"><p class="eyebrow">Loading…</p></div>
     </section>
 
-    <section class="panel" aria-labelledby="claude-heading">
-      <h2 id="claude-heading">Claude connection</h2>
-      <p class="eyebrow">Connect your Claude to let it plan meals for you</p>
-      <div id="link-slot"></div>
-      <div id="steps-slot"></div>
-      <p class="status">
-        <span class="dot" id="status-dot" aria-hidden="true"></span>
-        <span id="status-text">Checking Claude…</span>
-      </p>
-      <div class="reset-area">
-        <button class="text-btn" id="reset-link" type="button" aria-describedby="reset-hint" aria-expanded="false" aria-controls="reset-confirm">Reset link</button>
-        <p class="pf-hint" id="reset-hint">This stops the old link working and gives you a new one.</p>
-        <div class="confirm" id="reset-confirm" hidden>
-          <p id="reset-question">Reset your link? Claude stops working with the old link straight away. You’ll need to add the new link in Claude.</p>
-          <div class="form-actions">
-            <button class="btn" id="reset-yes" type="button">Yes, reset link</button>
-            <button class="btn btn-ghost" id="reset-no" type="button">Cancel</button>
+    <section class="panel sec" id="claude">
+      <h2 class="sec-h">
+        <button class="sec-btn" id="sec-claude-btn" type="button" aria-expanded="false" aria-controls="sec-claude">
+          <span class="sec-text"><span class="sec-title">Claude connection</span><span class="sec-sum"><span class="dot" id="sum-claude-dot" aria-hidden="true"></span><span id="sum-claude">Checking…</span></span></span>
+          <svg class="sec-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </h2>
+      <div class="sec-body" id="sec-claude" role="region" aria-labelledby="sec-claude-btn" hidden>
+        <div class="sec-inner">
+          <p class="eyebrow">Connect your Claude to let it plan meals for you</p>
+          <div id="link-slot"></div>
+          <div id="steps-slot"></div>
+          <p class="status">
+            <span class="dot" id="status-dot" aria-hidden="true"></span>
+            <span id="status-text">Checking Claude…</span>
+          </p>
+          <div class="reset-area">
+            <button class="text-btn" id="reset-link" type="button" aria-describedby="reset-hint" aria-expanded="false" aria-controls="reset-confirm">Reset link</button>
+            <p class="pf-hint" id="reset-hint">This stops the old link working and gives you a new one.</p>
+            <div class="confirm" id="reset-confirm" hidden>
+              <p id="reset-question">Reset your link? Claude stops working with the old link straight away. You’ll need to add the new link in Claude.</p>
+              <div class="form-actions">
+                <button class="btn" id="reset-yes" type="button">Yes, reset link</button>
+                <button class="btn btn-ghost" id="reset-no" type="button">Cancel</button>
+              </div>
+            </div>
+            <p class="pf-hint" id="reset-status" role="status" aria-live="polite"></p>
           </div>
         </div>
-        <p class="pf-hint" id="reset-status" role="status" aria-live="polite"></p>
       </div>
     </section>
 
-    <section class="panel account" id="account" aria-labelledby="account-heading" tabindex="-1">
-      <div class="account-head">
-        <div>
-          <h2 id="account-heading">Account</h2>
-          <p class="eyebrow">Your current plan</p>
+    <section class="panel sec account" id="account">
+      <h2 class="sec-h">
+        <button class="sec-btn" id="sec-account-btn" type="button" aria-expanded="false" aria-controls="sec-account">
+          <span class="sec-text"><span class="sec-title">Account</span><span class="sec-sum" id="sum-account">Loading…</span></span>
+          <svg class="sec-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </h2>
+      <div class="sec-body" id="sec-account" role="region" aria-labelledby="sec-account-btn" hidden>
+        <div class="sec-inner">
+          <div class="account-head">
+            <p class="eyebrow">Your current plan</p>
+            <span class="plan-pill">Free trial</span>
+          </div>
+
+          <div id="trial-status" class="trial-status"><p class="eyebrow">Loading…</p></div>
+
+          <div class="plan-tiles" role="group" aria-label="Plans">
+            <section class="plan-tile" id="tile-trial" aria-labelledby="tile-trial-h">
+              <h3 id="tile-trial-h">Free trial</h3>
+              <p class="plan-price">₹0</p>
+              <p class="plan-sub" id="trial-length"></p>
+              <ul class="plan-list">
+                <li>Planner, My Kitchen, Profile</li>
+                <li>Claude connection and all tools</li>
+              </ul>
+              <p class="plan-label plan-label-current">Current plan</p>
+            </section>
+            <section class="plan-tile" aria-labelledby="tile-paid-h">
+              <h3 id="tile-paid-h">Monthly</h3>
+              <p class="plan-price" id="paid-price"></p>
+              <p class="plan-sub" id="paid-later"></p>
+              <ul class="plan-list">
+                <li>Everything in the trial</li>
+                <li>Keeps working after day <span id="paid-after"></span></li>
+              </ul>
+              <p class="plan-label plan-label-soon">Coming soon</p>
+            </section>
+            <section class="plan-tile" aria-labelledby="tile-year-h">
+              <p class="plan-label plan-label-best">Best value</p>
+              <h3 id="tile-year-h">Yearly</h3>
+              <p class="plan-price" id="year-price"></p>
+              <p class="plan-sub" id="year-per-month"></p>
+              <ul class="plan-list">
+                <li>One payment, no monthly renewals.</li>
+                <li id="year-later"></li>
+              </ul>
+              <p class="plan-label plan-label-soon">Coming soon</p>
+            </section>
+          </div>
+
+          <p class="pf-hint account-note">Payments open soon. Your data and access stay exactly as they are.</p>
         </div>
-        <span class="plan-pill">Free trial</span>
       </div>
-
-      <div id="trial-status" class="trial-status"><p class="eyebrow">Loading…</p></div>
-
-      <div class="plan-tiles" role="group" aria-label="Plans">
-        <section class="plan-tile" id="tile-trial" aria-labelledby="tile-trial-h">
-          <h3 id="tile-trial-h">Free trial</h3>
-          <p class="plan-price">₹0</p>
-          <p class="plan-sub" id="trial-length"></p>
-          <ul class="plan-list">
-            <li>Planner, My Kitchen, Profile</li>
-            <li>Claude connection and all tools</li>
-          </ul>
-          <p class="plan-label plan-label-current">Current plan</p>
-        </section>
-        <section class="plan-tile" aria-labelledby="tile-paid-h">
-          <h3 id="tile-paid-h">Monthly</h3>
-          <p class="plan-price" id="paid-price"></p>
-          <p class="plan-sub" id="paid-later"></p>
-          <ul class="plan-list">
-            <li>Everything in the trial</li>
-            <li>Keeps working after day <span id="paid-after"></span></li>
-          </ul>
-          <p class="plan-label plan-label-soon">Coming soon</p>
-        </section>
-        <section class="plan-tile" aria-labelledby="tile-year-h">
-          <p class="plan-label plan-label-best">Best value</p>
-          <h3 id="tile-year-h">Yearly</h3>
-          <p class="plan-price" id="year-price"></p>
-          <p class="plan-sub" id="year-per-month"></p>
-          <ul class="plan-list">
-            <li>One payment, no monthly renewals.</li>
-            <li id="year-later"></li>
-          </ul>
-          <p class="plan-label plan-label-soon">Coming soon</p>
-        </section>
-      </div>
-
-      <p class="pf-hint account-note">Payments open soon. Your data and access stay exactly as they are.</p>
     </section>
 
-    <section class="panel invite" id="invite" aria-labelledby="invite-heading">
-      <div class="account-head">
-        <h2 id="invite-heading">Invite a friend</h2>
-        <span class="plan-label plan-label-soon invite-label">Rewards coming soon</span>
-      </div>
-      <p class="eyebrow invite-intro">Know someone who’s tired of deciding what to cook? Share Food Planner with them.</p>
-      <div class="field link-field">
-        <label for="invite-link">Your invite link</label>
-        <div class="copy-row">
-          <input class="mono" id="invite-link" type="text" readonly value="Loading…">
-          <button class="btn" id="invite-copy" type="button" aria-describedby="invite-copy-status">Copy</button>
+    <section class="panel sec invite" id="invite">
+      <h2 class="sec-h">
+        <button class="sec-btn" id="sec-invite-btn" type="button" aria-expanded="false" aria-controls="sec-invite">
+          <span class="sec-text"><span class="sec-title">Invite a friend</span><span class="sec-sum">Rewards coming soon</span></span>
+          <svg class="sec-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </h2>
+      <div class="sec-body" id="sec-invite" role="region" aria-labelledby="sec-invite-btn" hidden>
+        <div class="sec-inner">
+          <div class="account-head">
+            <span class="plan-label plan-label-soon invite-label">Rewards coming soon</span>
+          </div>
+          <p class="eyebrow invite-intro">Know someone who’s tired of deciding what to cook? Share Food Planner with them.</p>
+          <div class="field link-field">
+            <label for="invite-link">Your invite link</label>
+            <div class="copy-row">
+              <input class="mono" id="invite-link" type="text" readonly value="Loading…">
+              <button class="btn" id="invite-copy" type="button" aria-describedby="invite-copy-status">Copy</button>
+            </div>
+            <p class="pf-hint copy-status" id="invite-copy-status" role="status" aria-live="polite"></p>
+          </div>
+          <a class="btn btn-ghost btn-block invite-share" id="invite-share" href="https://wa.me/" target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
+          <p class="pf-hint invite-note">This link is only for inviting. It doesn’t give anyone access to your meals or your Claude connection.</p>
         </div>
-        <p class="pf-hint copy-status" id="invite-copy-status" role="status" aria-live="polite"></p>
       </div>
-      <a class="btn btn-ghost btn-block invite-share" id="invite-share" href="https://wa.me/" target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
-      <p class="pf-hint invite-note">This link is only for inviting. It doesn’t give anyone access to your meals or your Claude connection.</p>
     </section>
 
-    <section class="panel" aria-labelledby="key-heading">
-      <h2 id="key-heading">Your planner link</h2>
-      <p class="eyebrow">Your link is your key. Bookmark this page to get back to your planner on another device or browser.</p>
-      <div class="form-actions">
-        <button class="btn btn-ghost" id="copy-page-link" type="button">Copy link</button>
+    <section class="panel sec" id="planner-link">
+      <h2 class="sec-h">
+        <button class="sec-btn" id="sec-link-btn" type="button" aria-expanded="false" aria-controls="sec-link">
+          <span class="sec-text"><span class="sec-title">Your planner link</span><span class="sec-sum">Bookmark it to get back here</span></span>
+          <svg class="sec-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </h2>
+      <div class="sec-body" id="sec-link" role="region" aria-labelledby="sec-link-btn" hidden>
+        <div class="sec-inner">
+          <p class="eyebrow">Your link is your key. Bookmark this page to get back to your planner on another device or browser.</p>
+          <div class="form-actions">
+            <button class="btn btn-ghost" id="copy-page-link" type="button">Copy link</button>
+          </div>
+          <p class="pf-hint" id="copy-page-status" role="status" aria-live="polite"></p>
+        </div>
       </div>
-      <p class="pf-hint" id="copy-page-status" role="status" aria-live="polite"></p>
     </section>
 
     <a class="row-link" href="/w/{{key}}/profile/settings">

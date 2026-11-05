@@ -5,6 +5,59 @@
   const POLL_MS = 4000; // pick up changes Claude makes while the page is open
   let resetting = false; // while a link reset is in flight, polling doesn't touch the link
 
+  // ---------- Collapsible sections ----------
+  // Each .sec has a toggle button (aria-expanded) and a content region that is
+  // `hidden` while closed, so nothing inside can be reached by keyboard.
+  const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ANIM_MS = 200;
+  function setOpen(sec, open) {
+    const btn = sec.querySelector('.sec-btn');
+    const body = sec.querySelector('.sec-body');
+    if ((btn.getAttribute('aria-expanded') === 'true') === open) return;
+    btn.setAttribute('aria-expanded', String(open));
+    sec.classList.toggle('is-open', open);
+    clearTimeout(body._t);
+    if (open) {
+      body.hidden = false;
+      if (reduceMotion) { body.classList.add('open'); return; }
+      void body.offsetHeight; // start the animation from closed
+      body.classList.add('open');
+    } else {
+      body.classList.remove('open');
+      if (reduceMotion) { body.hidden = true; return; }
+      body._t = setTimeout(() => { if (btn.getAttribute('aria-expanded') === 'false') body.hidden = true; }, ANIM_MS);
+    }
+  }
+  const sections = Array.from(document.querySelectorAll('.sec'));
+  sections.forEach((sec) => {
+    sec.querySelector('.sec-btn').addEventListener('click', (e) => {
+      setOpen(sec, e.currentTarget.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+  // Deep links: #food-preferences, #claude, #account, #invite open that section.
+  function openFromHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const sec = id && sections.find((s) => s.id === id);
+    if (!sec) return;
+    setOpen(sec, true);
+    requestAnimationFrame(() => sec.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' }));
+  }
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+
+  // ---------- Summary lines ----------
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  // e.g. "Vegetarian · North Indian · Normal"; "Not set yet" when nothing is saved.
+  function foodSummary(p) {
+    if (!p) return 'Not set yet';
+    const parts = [];
+    if (p.diet) parts.push(cap(p.diet));
+    if (p.cuisines && p.cuisines.length) parts.push(p.cuisines.join(', '));
+    if (p.taste) parts.push(cap(p.taste));
+    return parts.length ? parts.join(' · ') : 'Not set yet';
+  }
+  const setFoodSummary = (p) => { $('sum-food').textContent = foodSummary(p); };
+
   // Save status: quiet "Saved", or an error that stays until the next good save.
   let savedTimer;
   const editor = FPProfile.createEditor({
@@ -13,6 +66,7 @@
       const s = $('save-status');
       clearTimeout(savedTimer);
       if (state === 'saved') {
+        setFoodSummary(editor.getProfile());
         s.textContent = 'Saved';
         s.classList.remove('is-error');
         savedTimer = setTimeout(() => { s.textContent = ''; }, 2500);
@@ -30,6 +84,8 @@
   function showStatus(connected) {
     $('status-dot').classList.toggle('on', connected);
     $('status-text').textContent = connected ? 'Claude connected' : 'Claude not connected yet';
+    $('sum-claude-dot').classList.toggle('on', connected);
+    $('sum-claude').textContent = connected ? 'Connected' : 'Not connected yet';
   }
 
   async function fetchProfile() {
@@ -41,6 +97,11 @@
   let mountedFields = false;
   async function load(first) {
     const data = await fetchProfile();
+    if (first) {
+      // First-time visitors (never saved preferences) start with this section open.
+      if (!data.profileSaved) setOpen($('food-preferences'), true);
+    }
+    if (first || !editor.busy()) setFoodSummary(data.profileSaved ? data.profile : null);
     if (!mountedFields) {
       editor.setProfile(data.profile, true); // before mounting, so fields start with saved values
       const box = $('prefs');
@@ -97,6 +158,7 @@
       box.replaceChildren(p('trial-line', 'You’re using the free trial'), row, bar);
     }
     $('tile-trial').classList.toggle('is-current', !s.trialEnded);
+    $('sum-account').textContent = s.trialEnded ? 'Free during launch' : 'Free trial · Day ' + s.trialDay + ' of ' + s.trialDays;
     $('trial-length').textContent = 'for ' + s.trialDays + ' days';
     $('paid-price').textContent = '₹' + s.priceLaunch + ' / month';
     $('paid-later').textContent = 'Launch price, rises to ₹' + s.priceLater;
@@ -108,7 +170,7 @@
   fetch('/api/' + encodeURIComponent(key) + '/subscription', { cache: 'no-store' })
     .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
     .then(renderAccount)
-    .catch(() => { $('trial-status').replaceChildren(Object.assign(document.createElement('p'), { className: 'error', textContent: 'Could not load your plan. Refresh to try again.' })); });
+    .catch(() => { $('sum-account').textContent = 'Couldn’t load your plan'; $('trial-status').replaceChildren(Object.assign(document.createElement('p'), { className: 'error', textContent: 'Could not load your plan. Refresh to try again.' })); });
 
   // Invite a friend: share link only (no rewards yet, nothing collected).
   let inviteUrl = '', inviteMsg = '';
