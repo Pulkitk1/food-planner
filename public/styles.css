@@ -1016,3 +1016,13 @@ h2 { font-size: 1.35rem; margin: 0 0 14px; }
 
 .start-price { margin: 12px 0 0; font-size: 1rem; font-weight: 500; color: var(--ink); }
 .start-price-note { display: block; margin-top: 2px; font-size: 0.85rem; font-weight: 400; color: var(--ink-soft); }
+
+/* ---------- Invite a friend (Profile) ---------- */
+.invite .account-head { align-items: center; flex-wrap: wrap; }
+.invite-label { margin: 0; }
+.invite-intro { margin: 8px 0 16px; }
+.invite .copy-row { flex-wrap: nowrap; }
+.invite #invite-link { flex: 1 1 auto; min-width: 0; text-overflow: ellipsis; }
+.invite .copy-row .btn { flex: none; }
+.invite-share { margin-top: 4px; }
+.invite-note { margin: 12px 0 0; }

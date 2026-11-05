@@ -79,6 +79,24 @@
       <p class="pf-hint account-note">Payments open soon. Your data and access stay exactly as they are.</p>
     </section>
 
+    <section class="panel invite" id="invite" aria-labelledby="invite-heading">
+      <div class="account-head">
+        <h2 id="invite-heading">Invite a friend</h2>
+        <span class="plan-label plan-label-soon invite-label">Rewards coming soon</span>
+      </div>
+      <p class="eyebrow invite-intro">Know someone who’s tired of deciding what to cook? Share Food Planner with them.</p>
+      <div class="field link-field">
+        <label for="invite-link">Your invite link</label>
+        <div class="copy-row">
+          <input class="mono" id="invite-link" type="text" readonly value="Loading…">
+          <button class="btn" id="invite-copy" type="button" aria-describedby="invite-copy-status">Copy</button>
+        </div>
+        <p class="pf-hint copy-status" id="invite-copy-status" role="status" aria-live="polite"></p>
+      </div>
+      <a class="btn btn-ghost btn-block invite-share" id="invite-share" href="https://wa.me/" target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
+      <p class="pf-hint invite-note">This link is only for inviting. It doesn’t give anyone access to your meals or your Claude connection.</p>
+    </section>
+
     <section class="panel" aria-labelledby="key-heading">
       <h2 id="key-heading">Your planner link</h2>
       <p class="eyebrow">Your link is your key. Bookmark this page to get back to your planner on another device or browser.</p>

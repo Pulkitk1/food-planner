@@ -17,6 +17,7 @@ app.disable('x-powered-by');
 // Behind a hosting proxy (Render, Railway, ...) use X-Forwarded-Proto/Host to build the MCP link.
 app.set('trust proxy', 'loopback, linklocal, uniquelocal');
 app.use(express.json({ limit: '50kb', strict: false }));
+app.use(express.urlencoded({ extended: false, limit: '2kb' })); // the start page form (invite code)
 app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 const KEY_RE = /^[A-Za-z0-9_-]{16,64}$/;
@@ -41,10 +42,23 @@ async function findWorkspace(key) {
 // Full MCP link for a workspace. Set BASE_URL (e.g. https://food.example.com)
 // when the app is hosted, so the link is right even behind proxies.
 // PUBLIC_URL is still accepted as an older name.
-function mcpUrl(req, token) {
+function baseUrl(req) {
   const configured = process.env.BASE_URL || process.env.PUBLIC_URL;
-  const base = configured ? configured.replace(/\/+$/, '') : `${req.protocol}://${req.get('host')}`;
-  return `${base}/mcp/${token}`;
+  return configured ? configured.replace(/\/+$/, '') : `${req.protocol}://${req.get('host')}`;
+}
+function mcpUrl(req, token) {
+  return `${baseUrl(req)}/mcp/${token}`;
+}
+
+// Invite codes: 8 random letters/digits, unrelated to the workspace key.
+const INVITE_RE = /^[A-Za-z0-9]{8}$/;
+const INVITE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+async function newInviteCode() {
+  for (;;) {
+    let code = '';
+    for (let i = 0; i < 8; i++) code += INVITE_CHARS[crypto.randomInt(INVITE_CHARS.length)];
+    if (!(await store.keyForInviteCode(code))) return code;
+  }
 }
 
 const profileOf = (ws) => ({ ...emptyProfile(), ...(ws.profile || {}) });
@@ -104,12 +118,27 @@ function buildSlot(body, existing) {
 
 // Pages
 app.get('/', (req, res) => {
-  res.type('html').send(START_HTML.replace('<!--NOTICE-->', req.query.deleted === '1' ? DELETED_NOTICE : ''));
+  // ?ref=CODE from an invite link goes into a hidden form field only; it is never shown.
+  const ref = typeof req.query.ref === 'string' && INVITE_RE.test(req.query.ref) ? req.query.ref : '';
+  res.type('html').send(START_HTML
+    .replace('<!--NOTICE-->', req.query.deleted === '1' ? DELETED_NOTICE : '')
+    .replace('<!--REF-->', ref ? `<input type="hidden" name="ref" value="${ref}">` : ''));
 });
+
+// Invite link: send people to the start page. Never reveals whose code it is.
+app.get('/invite/:code', wrap(async (req, res) => {
+  const { code } = req.params;
+  const known = INVITE_RE.test(code) && (await store.keyForInviteCode(code));
+  res.redirect(302, known ? `/?ref=${code}` : '/');
+}));
 
 app.post('/start', wrap(async (req, res) => {
   const key = crypto.randomBytes(18).toString('base64url');
   await store.createWorkspace(key, samplePlan());
+  const ref = req.body && typeof req.body.ref === 'string' ? req.body.ref : '';
+  if (INVITE_RE.test(ref) && (await store.keyForInviteCode(ref))) {
+    await store.updateMeta(key, { referredBy: ref }); // stored only; nothing else uses it yet
+  }
   res.redirect(303, `/w/${key}`);
 }));
 
@@ -312,6 +341,19 @@ app.get('/api/:key/subscription', wrap(async (req, res) => {
   }
   res.set('Cache-Control', 'no-store');
   res.json(trialInfo(createdAt));
+}));
+
+// Invite link for sharing. The code is created the first time it's needed.
+app.get('/api/:key/invite', wrap(async (req, res) => {
+  const ws = await findWorkspace(req.params.key);
+  if (!ws) return res.status(404).json({ error: 'Workspace not found' });
+  let code = ws.inviteCode;
+  if (!code || !INVITE_RE.test(code)) {
+    code = await newInviteCode();
+    await store.updateMeta(req.params.key, { inviteCode: code });
+  }
+  res.set('Cache-Control', 'no-store');
+  res.json({ inviteUrl: `${baseUrl(req)}/invite/${code}`, trialDays: PLAN.TRIAL_DAYS });
 }));
 
 // Settings

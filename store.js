@@ -142,6 +142,10 @@ function makeFileStore(file) {
       try { save(); } catch (e) { Object.assign(ws, before); throw e; }
       return ws.mcpToken;
     },
+    async keyForInviteCode(code) {
+      const all = load().workspaces;
+      return Object.keys(all).find((k) => all[k].inviteCode === code) || null;
+    },
     async keyForMcpToken(token) {
       const all = load().workspaces;
       return Object.keys(all).find((k) => all[k].mcpToken === token) || null;
@@ -225,6 +229,8 @@ function makePgStore(url) {
     onboarded: !!(r.meta && r.meta.onboarded),
     settings: (r.meta && r.meta.settings) || null,
     kitchen: (r.meta && r.meta.kitchen) || [],
+    inviteCode: (r.meta && r.meta.inviteCode) || null,
+    referredBy: (r.meta && r.meta.referredBy) || null,
   };
   return {
     kind: 'postgres',
@@ -260,6 +266,10 @@ function makePgStore(url) {
       const token = newMcpToken();
       const r = await pool.query('UPDATE workspaces SET mcp_token = $2, mcp_last_seen = NULL WHERE key = $1', [key, token]);
       return r.rowCount > 0 ? token : null;
+    },
+    async keyForInviteCode(code) {
+      const { rows } = await pool.query("SELECT key FROM workspaces WHERE meta->>'inviteCode' = $1 LIMIT 1", [code]);
+      return rows[0] ? rows[0].key : null;
     },
     async keyForMcpToken(token) {
       const { rows } = await pool.query('SELECT key FROM workspaces WHERE mcp_token = $1', [token]);

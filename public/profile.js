@@ -110,6 +110,49 @@
     .then(renderAccount)
     .catch(() => { $('trial-status').replaceChildren(Object.assign(document.createElement('p'), { className: 'error', textContent: 'Could not load your plan. Refresh to try again.' })); });
 
+  // Invite a friend: share link only (no rewards yet, nothing collected).
+  let inviteUrl = '', inviteMsg = '';
+  fetch('/api/' + encodeURIComponent(key) + '/invite', { cache: 'no-store' })
+    .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+    .then((d) => {
+      inviteUrl = d.inviteUrl;
+      inviteMsg = 'I use Food Planner to plan my meals with Claude. Try it free for ' + d.trialDays + ' days: ';
+      $('invite-link').value = inviteUrl;
+      $('invite-share').href = 'https://wa.me/?text=' + encodeURIComponent(inviteMsg + inviteUrl);
+    })
+    .catch(() => { $('invite-link').value = 'Couldn’t load your invite link. Refresh to try again.'; });
+  $('invite-link').addEventListener('focus', () => $('invite-link').select());
+  let inviteTimer;
+  $('invite-copy').addEventListener('click', async () => {
+    if (!inviteUrl) return;
+    const ok = await FPProfile.copyText(inviteUrl);
+    clearTimeout(inviteTimer);
+    const btn = $('invite-copy'), st = $('invite-copy-status');
+    if (ok) {
+      btn.textContent = 'Copied';
+      st.textContent = 'Invite link copied';
+      st.classList.remove('is-error');
+      inviteTimer = setTimeout(() => { btn.textContent = 'Copy'; st.textContent = ''; }, 2000);
+    } else {
+      $('invite-link').focus();
+      st.textContent = 'Couldn’t copy automatically. The link is selected: press Ctrl+C (or long-press and Copy).';
+      st.classList.add('is-error');
+    }
+  });
+  // On small screens, use the phone's own share sheet when there is one; otherwise WhatsApp.
+  $('invite-share').addEventListener('click', async (e) => {
+    if (!inviteUrl) { e.preventDefault(); return; }
+    const small = window.matchMedia && matchMedia('(max-width: 640px)').matches;
+    if (!small || !navigator.share) return; // follow the wa.me link
+    e.preventDefault();
+    try {
+      await navigator.share({ title: 'Food Planner', text: inviteMsg, url: inviteUrl });
+    } catch (err) {
+      if (err && err.name === 'AbortError') return; // user closed the share sheet
+      window.open($('invite-share').href, '_blank', 'noopener,noreferrer');
+    }
+  });
+
   // Copy the planner link (the Home page of this workspace).
   $('copy-page-link').addEventListener('click', async () => {
     const ok = await FPProfile.copyText(location.origin + '/w/' + encodeURIComponent(key));
