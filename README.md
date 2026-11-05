@@ -34,6 +34,7 @@ Workspaces created before dates were introduced (weekday plans) are migrated on 
 - `POST /api/:key/kitchen` with `{ "name": "paneer" }` adds one item. Duplicates (ignoring case) aren't added and return `{ item: null, duplicate: true }`.
 - `DELETE /api/:key/kitchen/:id` removes one item
 - `GET /api/:key/settings` / `PUT /api/:key/settings` with `{ "meals": { "breakfast": true, "lunch": false, "dinner": true } }`. Hidden meals keep their data; at least one must stay on (400 otherwise). `GET /api/:key/plan` also returns `settings`.
+- `GET /api/:key/subscription` returns `{ createdAt, trialDays, trialDay, trialDaysLeft, trialEnded, trialEndsOn, priceLaunch, priceLater }`. Display only: no payments yet and nothing is locked after the trial. Prices and trial length live in `plan-config.js`. A workspace without a creation date gets one (now) the first time this is read.
 - `GET /api/:key/export` downloads `food-planner-export.json` (profile, kitchen, plan, settings; the secret Claude link is left out).
 - `DELETE /api/:key` deletes the workspace for good (also from `data.json.bak` if present); its MCP link stops working.
 - `POST /api/:key/mcp-link/reset` issues a new MCP link; the old one stops working at once.

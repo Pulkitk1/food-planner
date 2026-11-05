@@ -10,6 +10,7 @@ const { store, MEALS, samplePlan } = require('./store');
 const { emptyProfile, applyProfileFields } = require('./profile-schema');
 const { mountMcp } = require('./mcp');
 const kitchen = require('./kitchen-list');
+const PLAN = require('./plan-config');
 
 const app = express();
 app.disable('x-powered-by');
@@ -24,7 +25,10 @@ const MAX_RANGE_DAYS = 400;
 const page = (name) => path.join(__dirname, 'public', name);
 // Standalone pages (start, not found) get the same theme script as the shared layout.
 const themed = (name) => fs.readFileSync(page(name), 'utf8').replace('<!--THEME-->', `${ICON_TAGS}\n  <script>${THEME_SCRIPT}</script>`);
-const START_HTML = themed('index.html');
+const START_HTML = themed('index.html')
+  .replace(/\{\{TRIAL_DAYS\}\}/g, String(PLAN.TRIAL_DAYS))
+  .replace(/\{\{PRICE_LAUNCH\}\}/g, String(PLAN.PRICE_LAUNCH))
+  .replace(/\{\{PRICE_YEARLY_LAUNCH\}\}/g, String(PLAN.PRICE_YEARLY_LAUNCH));
 const DELETED_NOTICE = '<p class="notice" role="status">Your data has been deleted.</p>';
 const NOT_FOUND_HTML = themed('notfound.html');
 const sendNotFound = (res) => res.status(404).type('html').send(NOT_FOUND_HTML);
@@ -115,7 +119,7 @@ const view = (name) => fs.readFileSync(path.join(__dirname, 'views', name), 'utf
 // Workspace pages, all rendered through the shared layout.
 // The id is the path after /w/:key; "active" is the highlighted sidebar tab.
 const SCREENS = {
-  '': { active: 'home', title: 'Today', content: view('home.html'), scripts: ['/home.js'] },
+  '': { active: 'home', title: 'Today', content: view('home.html'), scripts: ['/home.js', '/home-trial.js'] },
   planner: { active: 'planner', title: 'Planner', content: view('planner.html'), scripts: ['/planner.js'] },
   kitchen: { active: 'kitchen', title: 'My Kitchen', content: view('kitchen.html'), scripts: ['/profile-fields.js', '/kitchen.js'] },
   profile: { active: 'profile', title: 'Profile', content: view('profile.html'), scripts: ['/profile-fields.js', '/profile.js'] },
@@ -265,6 +269,49 @@ app.delete('/api/:key/kitchen/:id', wrap(async (req, res) => {
   const rest = list.filter((i) => i !== item);
   await store.updateMeta(req.params.key, { kitchen: rest });
   res.json({ removed: item, items: rest });
+}));
+
+// Plan / trial (display only: nothing is locked when the trial ends, no payments yet).
+const DAY_MS = 24 * 60 * 60 * 1000;
+const localYmd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function trialInfo(createdAt, now = new Date()) {
+  const created = new Date(createdAt);
+  const elapsed = Math.max(0, Math.floor((now - created) / DAY_MS)); // full days since sign-up
+  const days = PLAN.TRIAL_DAYS;
+  return {
+    createdAt: created.toISOString(),
+    trialDays: days,
+    trialDay: Math.min(Math.max(elapsed + 1, 1), Math.max(days, 1)),
+    trialDaysLeft: Math.max(0, days - elapsed),
+    trialEnded: elapsed >= days,
+    trialEndsOn: localYmd(new Date(created.getTime() + days * DAY_MS)),
+    priceLaunch: PLAN.PRICE_LAUNCH,
+    priceLater: PLAN.PRICE_LATER,
+    ...yearlyInfo(),
+  };
+}
+
+// Yearly figures are worked out from the config, never typed in.
+function yearlyInfo() {
+  return {
+    priceYearlyLaunch: PLAN.PRICE_YEARLY_LAUNCH,
+    priceYearlyLater: PLAN.PRICE_YEARLY_LATER,
+    yearlyPerMonth: Math.round(PLAN.PRICE_YEARLY_LAUNCH / 12),
+    yearlySavingPct: Math.round((1 - PLAN.PRICE_YEARLY_LAUNCH / (12 * PLAN.PRICE_LAUNCH)) * 100),
+  };
+}
+
+app.get('/api/:key/subscription', wrap(async (req, res) => {
+  const ws = await findWorkspace(req.params.key);
+  if (!ws) return res.status(404).json({ error: 'Workspace not found' });
+  let createdAt = ws.createdAt;
+  if (!createdAt || Number.isNaN(new Date(createdAt).getTime())) {
+    // Older workspaces without a date: start their trial now, and remember it.
+    createdAt = new Date().toISOString();
+    await store.updateMeta(req.params.key, { createdAt });
+  }
+  res.set('Cache-Control', 'no-store');
+  res.json(trialInfo(createdAt));
 }));
 
 // Settings

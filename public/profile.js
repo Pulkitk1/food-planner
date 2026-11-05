@@ -69,6 +69,47 @@
     if (!document.hidden && mountedFields && !editor.busy()) load(false).catch(() => {});
   });
 
+  // Account card: plan and trial (display only; no payments yet).
+  const parseYmd = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  function renderAccount(s) {
+    const box = $('trial-status');
+    const p = (cls, text) => Object.assign(document.createElement('p'), { className: cls, textContent: text });
+    if (s.trialEnded) {
+      box.replaceChildren(
+        p('trial-line', 'Your free trial has ended'),
+        p('pf-hint', 'Payments aren’t switched on yet, so everything stays free for now.'));
+    } else {
+      const ends = parseYmd(s.trialEndsOn).toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
+      const row = document.createElement('div');
+      row.className = 'trial-row';
+      row.append(p('', 'Day ' + s.trialDay + ' of ' + s.trialDays), p('', 'Ends on ' + ends));
+      const bar = document.createElement('div');
+      bar.className = 'trial-bar';
+      bar.setAttribute('role', 'progressbar');
+      bar.setAttribute('aria-label', 'Free trial progress');
+      bar.setAttribute('aria-valuemin', '0');
+      bar.setAttribute('aria-valuemax', String(s.trialDays));
+      bar.setAttribute('aria-valuenow', String(s.trialDay));
+      bar.setAttribute('aria-valuetext', 'Day ' + s.trialDay + ' of ' + s.trialDays);
+      const fill = document.createElement('span');
+      fill.style.width = Math.round((s.trialDay / s.trialDays) * 100) + '%';
+      bar.append(fill);
+      box.replaceChildren(p('trial-line', 'You’re using the free trial'), row, bar);
+    }
+    $('tile-trial').classList.toggle('is-current', !s.trialEnded);
+    $('trial-length').textContent = 'for ' + s.trialDays + ' days';
+    $('paid-price').textContent = '₹' + s.priceLaunch + ' / month';
+    $('paid-later').textContent = 'Launch price, rises to ₹' + s.priceLater;
+    $('paid-after').textContent = String(s.trialDays);
+    $('year-price').textContent = '₹' + s.priceYearlyLaunch + ' / year';
+    $('year-per-month').textContent = 'About ₹' + s.yearlyPerMonth + ' a month, saves about ' + s.yearlySavingPct + '%';
+    $('year-later').textContent = 'Launch price, rises to ₹' + s.priceYearlyLater;
+  }
+  fetch('/api/' + encodeURIComponent(key) + '/subscription', { cache: 'no-store' })
+    .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+    .then(renderAccount)
+    .catch(() => { $('trial-status').replaceChildren(Object.assign(document.createElement('p'), { className: 'error', textContent: 'Could not load your plan. Refresh to try again.' })); });
+
   // Copy the planner link (the Home page of this workspace).
   $('copy-page-link').addEventListener('click', async () => {
     const ok = await FPProfile.copyText(location.origin + '/w/' + encodeURIComponent(key));

@@ -8,15 +8,6 @@
       <div id="prefs"><p class="eyebrow">Loading…</p></div>
     </section>
 
-    <section class="panel" aria-labelledby="key-heading">
-      <h2 id="key-heading">Your planner link</h2>
-      <p class="eyebrow">Your link is your key. Bookmark this page to get back to your planner on another device or browser.</p>
-      <div class="form-actions">
-        <button class="btn btn-ghost" id="copy-page-link" type="button">Copy link</button>
-      </div>
-      <p class="pf-hint" id="copy-page-status" role="status" aria-live="polite"></p>
-    </section>
-
     <section class="panel" aria-labelledby="claude-heading">
       <h2 id="claude-heading">Claude connection</h2>
       <p class="eyebrow">Connect your Claude to let it plan meals for you</p>
@@ -38,6 +29,63 @@
         </div>
         <p class="pf-hint" id="reset-status" role="status" aria-live="polite"></p>
       </div>
+    </section>
+
+    <section class="panel account" id="account" aria-labelledby="account-heading" tabindex="-1">
+      <div class="account-head">
+        <div>
+          <h2 id="account-heading">Account</h2>
+          <p class="eyebrow">Your current plan</p>
+        </div>
+        <span class="plan-pill">Free trial</span>
+      </div>
+
+      <div id="trial-status" class="trial-status"><p class="eyebrow">Loading…</p></div>
+
+      <div class="plan-tiles" role="group" aria-label="Plans">
+        <section class="plan-tile" id="tile-trial" aria-labelledby="tile-trial-h">
+          <h3 id="tile-trial-h">Free trial</h3>
+          <p class="plan-price">₹0</p>
+          <p class="plan-sub" id="trial-length"></p>
+          <ul class="plan-list">
+            <li>Planner, My Kitchen, Profile</li>
+            <li>Claude connection and all tools</li>
+          </ul>
+          <p class="plan-label plan-label-current">Current plan</p>
+        </section>
+        <section class="plan-tile" aria-labelledby="tile-paid-h">
+          <h3 id="tile-paid-h">Monthly</h3>
+          <p class="plan-price" id="paid-price"></p>
+          <p class="plan-sub" id="paid-later"></p>
+          <ul class="plan-list">
+            <li>Everything in the trial</li>
+            <li>Keeps working after day <span id="paid-after"></span></li>
+          </ul>
+          <p class="plan-label plan-label-soon">Coming soon</p>
+        </section>
+        <section class="plan-tile" aria-labelledby="tile-year-h">
+          <p class="plan-label plan-label-best">Best value</p>
+          <h3 id="tile-year-h">Yearly</h3>
+          <p class="plan-price" id="year-price"></p>
+          <p class="plan-sub" id="year-per-month"></p>
+          <ul class="plan-list">
+            <li>One payment, no monthly renewals.</li>
+            <li id="year-later"></li>
+          </ul>
+          <p class="plan-label plan-label-soon">Coming soon</p>
+        </section>
+      </div>
+
+      <p class="pf-hint account-note">Payments open soon. Your data and access stay exactly as they are.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="key-heading">
+      <h2 id="key-heading">Your planner link</h2>
+      <p class="eyebrow">Your link is your key. Bookmark this page to get back to your planner on another device or browser.</p>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="copy-page-link" type="button">Copy link</button>
+      </div>
+      <p class="pf-hint" id="copy-page-status" role="status" aria-live="polite"></p>
     </section>
 
     <a class="row-link" href="/w/{{key}}/profile/settings">
