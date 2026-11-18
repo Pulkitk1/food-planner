@@ -1,4 +1,4 @@
-# Food Planner (working name)
+# Food Planner 
 
 Meal planner for working professionals. **No AI inside the app**: no model API keys, no model calls. Users connect their own Claude via MCP; the app only saves, shows and edits data.
 
